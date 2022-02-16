@@ -1,0 +1,48 @@
+services:
+  alpha:
+    container_name: alpha
+    image: alpha
+    build: 
+      context: alpha
+      dockerfile: Dockerfile
+    ports:
+      - 5001:80
+    volumes:
+      - ./alpha:/var/www/html/
+  beta:
+    container_name: beta
+    image: beta
+    build: 
+      context: beta
+      dockerfile: Dockerfile
+    ports:
+      - 5002:80
+    volumes:
+      - ./beta:/var/www/html/
+  nginx:
+    build:
+      context: nginx/
+    ports:
+      - 8080:80
+    depends_on:
+      - alpha
+      - beta    
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5000:8080  
+
+volumes:
+  mysql-data:
+  alpha:
+  beta:
