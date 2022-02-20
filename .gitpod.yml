@@ -1,5 +1,8 @@
 tasks:
   - init: |
-      echo 'TODO: build project'
+      docker-compose up
     command: |
-      echo 'TODO: start app'
+      docker-compose up
+ports:
+  - port: 5000
+    onOpen: open-browser

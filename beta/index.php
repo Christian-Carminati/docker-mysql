@@ -12,31 +12,46 @@ try {
 }
 
 
-Insert();
-Read();
+Insert($db,$host);
 
+Read($db,$host);
+Perc($db,$host);
 
-function Insert()
+function Insert($db,$host)
 {
-  global $db;
-  global $host;
   $sql = "INSERT INTO Richieste (Backend) VALUES (?)";
   $stmt= $db->prepare($sql);
   $stmt->execute([$host]);
 }
-function Read()
+function Read($db,$host)
 {
-  global $db;
-  global $host;
   $sql = "SELECT ID,Data_Richiesta FROM Richieste WHERE Backend = ?";
   $stmt= $db->prepare($sql);
   $stmt->execute([$host]);
   $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
   Display($results);
 }
+function Perc($db,$host)
+{
+  $sql = "SELECT COUNT(*) FROM Richieste";
+  $stmt= $db->query($sql);
+  $Totcount = $stmt->fetchColumn();
+  
+
+  $sql = "SELECT COUNT(*) FROM Richieste WHERE Backend = ?"; 
+  $res = $db->prepare($sql); 
+  $res->execute([$host]); 
+  $count = $res->fetchColumn();
+
+
+  echo number_format($count/$Totcount * 100,2). "% di richieste ".$host;
+
+
+}
 function Display($results)
 {
   ?>
+  <h3>Richieste beta</h3>
   <table>
     <thead>
     <tr>
@@ -53,6 +68,7 @@ function Display($results)
      <?php } ?>
    </tbody>
   </table>
+  <br><br>
   <?php
 }
 ?>
